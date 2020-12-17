@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>FIFA Street</title>
+		<style>
+			body {
+				font-family: sans-serif;
+				text-align: center;
+				margin: 0px;
+				padding: 0px;
+			}
+
+			.container {
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+				width: 100%;
+			}
+
+			header {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: orange;
+				font-weight: bold;
+				font-size: 130%;
+				flex: 0 0 10%;
+			}
+
+			.contents {
+				flex: 1 1 40000%;
+			}
+
+			#list {
+				border-collapse: collapse;
+				text-align: center;
+				margin-left: auto;
+				margin-right: auto;
+				width: 100%;
+			}
+
+			#list td[onclick] {
+				cursor: pointer;
+			}
+
+			#list tbody:nth-child(even) {
+				background: #ddd;
+			}
+
+			#list tr.playing {
+				background: orange;
+			}
+
+			audio {
+				flex: 0 0 20%;
+				width: 100%;
+			}
+		</style>
+		<script>
+			const song_srcs = [];
+
+			function getRandomSong(current=-1) {
+				let ret = current;
+				while(ret == current) ret = Math.floor(Math.random() * song_srcs.length);
+				return ret;
+			}
+
+			function playSong(track_no) {
+				try {
+					document.querySelector("tr.playing").classList.remove("playing");
+				} catch {}
+				document.querySelector("#track-" + track_no).classList.add("playing");
+				const audio = document.querySelector("audio");
+				audio.onended = null;
+				audio.src = song_srcs[track_no];
+				audio.play();
+				const next = getRandomSong(track_no);
+				audio.onended = () => {playSong(next);}
+			}
+
+			window.onload = async () => {
+				const elem = document.querySelector("#list");
+				const db = await (await fetch("database.json")).json();
+				for(const i in db) {
+					const x = db[i];
+					const path = "audio/" + x.file + ".opus";
+					song_srcs.push(path);
+					elem.innerHTML += `<tr id="track-${i}"><td onclick="playSong(${i})">${x.title}</td><td onclick="playSong(${i})">${x.artist}</td><td><a href="${path}" download>Download</a></td></tr>`;
+				}
+				playSong(getRandomSong());
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<header>EA&#x2122; Trax</header>
+			<div class="contents">
+				<table id="list">
+					<thead><th>Title</th><th>Artist</th></thead>
+				</table>
+			</div>
+			<audio controls></audio>
+		</div>
+	</body>
+</html>
