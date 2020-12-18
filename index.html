@@ -8,52 +8,73 @@
 				text-align: center;
 				margin: 0px;
 				padding: 0px;
-			}
-
-			.container {
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-				width: 100%;
+				overflow-y: scroll;
+				background-image: url("assets/bg.png");
+				background-size: cover;
 			}
 
 			header {
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 10vmin;
+
 				display: flex;
 				align-items: center;
 				justify-content: center;
+
 				color: orange;
 				font-weight: bold;
-				font-size: 130%;
-				flex: 0 0 10%;
+				font-size: 150%;
+				text-shadow: 2px 2px #000;
+				background-image: linear-gradient(to right, transparent, #14364e 60%, transparent);
 			}
 
-			.contents {
-				flex: 1 1 40000%;
-			}
-
-			#list {
+			table {
+				margin-top: 10vmin;
+				margin-bottom: 10vmin;
 				border-collapse: collapse;
 				text-align: center;
 				margin-left: auto;
 				margin-right: auto;
-				width: 100%;
+				color: white;
+				text-shadow: 2px 2px #000;
 			}
 
-			#list td[onclick] {
+			table td[onclick] {
 				cursor: pointer;
 			}
 
-			#list tbody:nth-child(even) {
-				background: #ddd;
+			table tbody:nth-child(even) {
+				background: rgba(1,1,1,0.3);
 			}
 
-			#list tr.playing {
+			table tr.playing {
 				background: orange;
 			}
 
+			a, table th {
+				color: orange;
+			}
+
 			audio {
-				flex: 0 0 20%;
+				position: fixed;
+				bottom: 0px;
+				left: 0px;
+				height: 10vmin;
 				width: 100%;
+				outline: none;
+			}
+
+			@media (orientation: landscape) {
+				table, audio {
+					width: 80vw;
+				}
+
+				audio {
+					margin-left: 10vw;
+				}
 			}
 		</style>
 		<script>
@@ -79,7 +100,7 @@
 			}
 
 			window.onload = async () => {
-				const elem = document.querySelector("#list");
+				const elem = document.querySelector("table");
 				const db = await (await fetch("database.json")).json();
 				for(const i in db) {
 					const x = db[i];
@@ -92,14 +113,10 @@
 		</script>
 	</head>
 	<body>
-		<div class="container">
-			<header>EA&#x2122; Trax</header>
-			<div class="contents">
-				<table id="list">
-					<thead><th>Title</th><th>Artist</th></thead>
-				</table>
-			</div>
-			<audio controls></audio>
-		</div>
+		<table>
+			<thead><th>Title</th><th>Artist</th></thead>
+		</table>
+		<header>EA&#x2122; TRAX</header>
+		<audio controls></audio>
 	</body>
 </html>
